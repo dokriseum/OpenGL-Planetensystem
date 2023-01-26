@@ -157,16 +157,6 @@ void Applikation::run() {
         //projektion = glm::perspective(45.0f, 16.0f / 9.0f, 0.1f, 10.0f);
         //ansicht = glm::lookAt(glm::vec3(0,0,-5),glm::vec3(0,0,0),glm::vec3(0,1,0));
         modell = glm::mat4(1.0f);
-        setTexture(ukSonne.getObjekt(),pathsBMP[0],programmID,renderInformationVector[0]);
-        setTexture(ukMerkur.getObjekt(),pathsBMP[1],programmID,renderInformationVector[1]);
-        setTexture(ukVenus.getObjekt(),pathsBMP[2],programmID,renderInformationVector[2]);
-        setTexture(ukErde.getObjekt(),pathsBMP[3],programmID,renderInformationVector[3]);
-        setTexture(ukMars.getObjekt(),pathsBMP[4],programmID,renderInformationVector[4]);
-        setTexture(ukJupiter.getObjekt(),pathsBMP[5],programmID,renderInformationVector[5]);
-        setTexture(ukSaturn.getObjekt(),pathsBMP[6],programmID,renderInformationVector[6]);
-        setTexture(ukUranus.getObjekt(),pathsBMP[7],programmID,renderInformationVector[7]);
-        setTexture(ukNeptun.getObjekt(),pathsBMP[8],programmID,renderInformationVector[8]);
-        setTexture(ukPluto.getObjekt(),pathsBMP[9],programmID,renderInformationVector[9]);
 
         glUniform1i(glGetUniformLocation(programmID, "myTextureSampler"), 0);
         for (int i = 0; i < ukVector.size(); i++) {
