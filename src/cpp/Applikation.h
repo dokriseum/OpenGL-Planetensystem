@@ -2,7 +2,6 @@
 #define _APPLIKATION_H
 
 #include "GLFW/glfw3.h"
-#include "RenderInformation.h"
 #include "Universumskoerper.h"
 #include "asset.hpp"
 #include <glm/glm.hpp>
@@ -38,10 +37,7 @@ private:
     RESOURCES_DIR "/pluto.bmp"
     };
     void sendMVP(mat4 gameObjectModel);
-    void setTexture(glm::mat4 uk, const char *path, unsigned int programmID);
-    void setTexture(glm::mat4 uk, const char *path, unsigned int programmID, RenderInformation ri);
-    RenderInformation renderHelper(Universumskoerper uk);
-
+    Universumskoerper renderHelper(Universumskoerper uk);
 };
 
 #endif

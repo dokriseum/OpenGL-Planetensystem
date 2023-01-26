@@ -19,9 +19,6 @@ using namespace glm;
 #include <filesystem>
 #include <fstream>
 
-
-RenderInformation renderHelper(Universumskoerper uk);
-
 Applikation::Applikation(unsigned int breite, unsigned int hoehe, const char* titel) {
 	this->breite = breite;
 	this->hoehe = hoehe;
@@ -76,7 +73,7 @@ void drawVertices(Universumskoerper uk) {
     glGenBuffers(1, &vertexbuffer); // Kennung erhalten
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer); // Daten zur Kennung definieren
     // Buffer zugreifbar für die Shader machen
-    glBufferData(GL_ARRAY_BUFFER, uk.getRenderInformation().renderVertices.size() * sizeof(glm::vec3), &uk.getRenderInformation().renderVertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, uk.vertices.size() * sizeof(glm::vec3), &uk.vertices[0], GL_STATIC_DRAW);
 
     // A5.3
     // Erst nach glEnableVertexAttribArray kann DrawArrays auf die Daten zugreifen...
@@ -98,31 +95,6 @@ void Applikation::sendMVP(glm::mat4 gameObjectModel) {
     glUniformMatrix4fv(glGetUniformLocation(programmID, "P"), 1, GL_FALSE, &projektion[0][0]);
 }
 
-//----------------------------//
-//        set texture         //
-//----------------------------//
-
-
-void Applikation::setTexture(glm::mat4 uk, const char *path, unsigned int programmID, RenderInformation ri) {
-    glm::mat4 tmp = uk;
-    GLint texture = loadBMP_custom(path);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glUniform1i(glGetUniformLocation(programmID, "myTextureSampler"), 0);
-    sendMVP(ri.renderModel);
-    glBindVertexArray(ri.renderVertexArray);
-    glDrawArrays(GL_TRIANGLES, 0, ri.renderVertices.size());
-    uk = tmp;
-    /**
-    GLint texture = loadBMP_custom(path);
-    glm::mat4 tmp = uk;
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glUniform1i(glGetUniformLocation(programmID, "myTextureSampler"), 0);
-    uk = tmp;
-    **/
-}
-
 void Applikation::run() {
 	if (!this->hwnd) {
 		glfwTerminate();
@@ -137,9 +109,6 @@ void Applikation::run() {
 		return;
 	}
 
-
-
-
 	glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.0f, 0.0f, 0.9f);
@@ -148,42 +117,36 @@ void Applikation::run() {
 	programmID = LoadShaders(SHADER_DIR "/StandardShading.vertexshader", SHADER_DIR "/StandardShading.fragmentshader");
 	glUseProgram(programmID);
 
-    std::vector<RenderInformation> renderInformationVector;
-    Universumskoerper ukSonne = Universumskoerper(RESOURCES_DIR "/sphere.obj", -5.0f, 0.0f, 0.0f, 2.0f, 2.0f, 2.0f);
-    Universumskoerper ukMerkur = Universumskoerper(RESOURCES_DIR "/sphere.obj", 1.0f, 0.0f, 0.0f, 0.2f, 0.2f, 0.2f);
-    Universumskoerper ukVenus = Universumskoerper(RESOURCES_DIR "/sphere.obj", 2.0f, 0.0f, 0.0f, 0.2f, 0.2f, 0.3f);
-    Universumskoerper ukErde = Universumskoerper(RESOURCES_DIR "/sphere.obj", 3.0f, 0.0f, 0.0f, 0.3f, 0.3f, 0.3f);
-    Universumskoerper ukMars = Universumskoerper(RESOURCES_DIR "/sphere.obj", 4.0f, 0.0f, 0.0f, 0.3f, 0.3f, 0.3f);
-    Universumskoerper ukJupiter = Universumskoerper(RESOURCES_DIR "/sphere.obj", 5.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.5f);
-    Universumskoerper ukSaturn = Universumskoerper(RESOURCES_DIR "/sphere.obj", 6.0f, 0.0f, 0.0f, 0.7f, 0.7f, 0.7f);
-    Universumskoerper ukUranus = Universumskoerper(RESOURCES_DIR "/sphere.obj", 7.0f, 0.0f, 0.0f, 0.45f, 0.45f, 0.45f);
-    Universumskoerper ukNeptun = Universumskoerper(RESOURCES_DIR "/sphere.obj", 8.0f, 0.0f, 0.0f, 0.45f, 0.45f, 0.45f);
-    Universumskoerper ukPluto = Universumskoerper(RESOURCES_DIR "/sphere.obj", 9.0f, 0.0f, 0.0f, 0.1f, 0.1f, 0.1f);
+    std::vector<Universumskoerper> ukVector;
+    ukVector.reserve(10);
 
-    renderInformationVector.reserve(10);
-    renderInformationVector.push_back(renderHelper(ukSonne));
-    renderInformationVector.push_back(renderHelper(ukMerkur));
-    renderInformationVector.push_back(renderHelper(ukVenus));
-    renderInformationVector.push_back(renderHelper(ukErde));
-    renderInformationVector.push_back(renderHelper(ukMars));
-    renderInformationVector.push_back(renderHelper(ukJupiter));
-    renderInformationVector.push_back(renderHelper(ukSaturn));
-    renderInformationVector.push_back(renderHelper(ukUranus));
-    renderInformationVector.push_back(renderHelper(ukNeptun));
-    renderInformationVector.push_back(renderHelper(ukPluto));
+    Universumskoerper ukSonne = Universumskoerper("Sonne",RESOURCES_DIR "/sonne.bmp", -5.0f, 0.0f, 0.0f, 2.0f, 2.0f, 2.0f);
+    Universumskoerper ukMerkur = Universumskoerper("Merkur", RESOURCES_DIR "/merkur.bmp", 1.0f, 0.0f, 0.0f, 0.2f, 0.2f, 0.2f);
+    Universumskoerper ukVenus = Universumskoerper("Venus", RESOURCES_DIR "/venus.bmp", 2.0f, 0.0f, 0.0f, 0.2f, 0.2f, 0.3f);
+    Universumskoerper ukErde = Universumskoerper("Erde", RESOURCES_DIR "/erde.bmp", 3.0f, 0.0f, 0.0f, 0.3f, 0.3f, 0.3f);
+    Universumskoerper ukMars = Universumskoerper("Mars", RESOURCES_DIR "/mars.bmp", 4.0f, 0.0f, 0.0f, 0.3f, 0.3f, 0.3f);
+    Universumskoerper ukJupiter = Universumskoerper("Jupiter", RESOURCES_DIR "/jupiter.bmp", 5.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.5f);
+    Universumskoerper ukSaturn = Universumskoerper("Saturn", RESOURCES_DIR "/saturn.bmp", 6.0f, 0.0f, 0.0f, 0.7f, 0.7f, 0.7f);
+    Universumskoerper ukUranus = Universumskoerper("Uranus", RESOURCES_DIR "/uranus.bmp", 7.0f, 0.0f, 0.0f, 0.45f, 0.45f, 0.45f);
+    Universumskoerper ukNeptun = Universumskoerper("Neptun", RESOURCES_DIR "/neptun.bmp", 8.0f, 0.0f, 0.0f, 0.45f, 0.45f, 0.45f);
+    Universumskoerper ukPluto = Universumskoerper("Pluto", RESOURCES_DIR "/pluto.bmp", 9.0f, 0.0f, 0.0f, 0.1f, 0.1f, 0.1f);
+
+    ukVector.push_back(renderHelper(ukSonne));
+    ukVector.push_back(renderHelper(ukMerkur));
+    ukVector.push_back(renderHelper(ukVenus));
+    ukVector.push_back(renderHelper(ukErde));
+    ukVector.push_back(renderHelper(ukMars));
+    ukVector.push_back(renderHelper(ukJupiter));
+    ukVector.push_back(renderHelper(ukSaturn));
+    ukVector.push_back(renderHelper(ukUranus));
+    ukVector.push_back(renderHelper(ukNeptun));
+    ukVector.push_back(renderHelper(ukPluto));
     float n = 0.1f;
     float f = 100.0f;
     this->projektion = glm::perspective(45.0f, 16.0f / 9.0f, n, f);
     this->ansicht = glm::lookAt(glm::vec3(0.0, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-    //----------------------------
 
-    //----------------------------
-    //ukSonne.setTexture(RESOURCES_DIR "/erde.bmp", programmID);
-    //ukMerkur.setTexture(RESOURCES_DIR "/merkur.bmp", programmID);
-
-    //setTexture(ukSonne.getObjekt(),pathsBMP[0],programmID,renderInformationVector[0]);
-    //setTexture(ukMerkur.getObjekt(),pathsBMP[1],programmID,renderInformationVector[1]);
     //----------------------------//
     //            WHILE           //
     //----------------------------//
@@ -206,19 +169,16 @@ void Applikation::run() {
         setTexture(ukPluto.getObjekt(),pathsBMP[9],programmID,renderInformationVector[9]);
 
         glUniform1i(glGetUniformLocation(programmID, "myTextureSampler"), 0);
-        for (int i = 0; i < renderInformationVector.size(); i++) {
-            RenderInformation r = renderInformationVector[i];
-
-            /**
-            GLint texture = loadBMP_custom(pathsBMP[i]);
+        for (int i = 0; i < ukVector.size(); i++) {
+            Universumskoerper uk = ukVector[i];
+            glm::mat4 tmp = uk.gameObjectModel;
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture);
+            glBindTexture(GL_TEXTURE_2D, uk.texture);
             glUniform1i(glGetUniformLocation(programmID, "myTextureSampler"), 0);
-            **/
-
-            sendMVP(r.renderModel);
-            glBindVertexArray(r.renderVertexArray);
-            glDrawArrays(GL_TRIANGLES, 0, r.renderVertices.size());
+            sendMVP(uk.gameObjectModel);
+            glBindVertexArray(uk.renderVertexArray);
+            glDrawArrays(GL_TRIANGLES, 0, uk.vertices.size());
+            uk.gameObjectModel = tmp;
         }
         //glUniform1i(glGetUniformLocation(programmID, "myTextureSampler"), 0);
         glm::vec4 lightPos = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -10.0f)) * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
@@ -236,11 +196,10 @@ void Applikation::run() {
 
 //2
 //helper method for setting ub the vertex-, uv- and normalbuffer
-RenderInformation Applikation::renderHelper(Universumskoerper uk) {
-    RenderInformation ri = uk.getRenderInformation();
-    std::vector<glm::vec3> vertices = ri.renderVertices;
-    std::vector<glm::vec2> uvs = ri.renderUvs;
-    std::vector<glm::vec3> normals = ri.renderNormals;
+Universumskoerper Applikation::renderHelper(Universumskoerper uk) {
+    std::vector<glm::vec3> vertices = uk.vertices;
+    std::vector<glm::vec2> uvs = uk.uvs;
+    std::vector<glm::vec3> normals = uk.normals;
 
     GLuint VertexArrayIDUniversumskoerper;
     glGenVertexArrays(1, &VertexArrayIDUniversumskoerper);
@@ -275,9 +234,9 @@ RenderInformation Applikation::renderHelper(Universumskoerper uk) {
     glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
     glEnableVertexAttribArray(1); // siehe layout im vertex shader
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-    RenderInformation rhi = ri;
-    rhi.renderVertexArray = VertexArrayIDUniversumskoerper;
-    rhi.renderVertices = vertices;
-    rhi.renderModel = ri.renderModel;
-    return rhi;
+    Universumskoerper uk2 = uk;
+    uk2.renderVertexArray = VertexArrayIDUniversumskoerper;
+    uk2.vertices = vertices;
+    uk2.gameObjectModel = uk.gameObjectModel;
+    return uk2;
 }
