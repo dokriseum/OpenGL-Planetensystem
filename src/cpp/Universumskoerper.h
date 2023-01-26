@@ -35,6 +35,7 @@ public:
     void setScale(float scaleX, float scaleY, float scaleZ);
     void setTexture(const char* path, unsigned int programmID);
     glm::mat4 getObjekt();
+    void setLeuchtkraft(int programmID);
 
     GLuint texture;
 };

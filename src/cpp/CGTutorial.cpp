@@ -75,7 +75,7 @@ void error_callback(int error, const char* description)
 // button click, Key pressed, etc.).
 // Durch die äbergabe dieser Funktion kännen wir Keyboard-Events 
 // abfangen. Mouse-Events z. B. erhalten wir nicht, da wir keinen Callback an GLFW äbergeben.
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+/*void key_callbacker(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	switch (key)
 	{
@@ -224,7 +224,7 @@ int mains(void)
 	}
 
 	// Fehler werden auf stderr ausgegeben, s. o.
-	glfwSetErrorCallback(error_callback);
+	//glfwSetErrorCallback(error_callback);
 
 	// öffnen eines Fensters für OpenGL, die letzten beiden Parameter sind hier unwichtig.
 	// Diese Funktion darf erst aufgerufen werden, nachdem GLFW initialisiert wurde.
@@ -264,7 +264,7 @@ int mains(void)
 	}
 
 	// Auf Keyboard-Events reagieren (s. o.)
-	glfwSetKeyCallback(window, key_callback);
+	//glfwSetKeyCallback(window, key_callback);
 
 	// Setzen von Dunkelblau als Hintergrundfarbe (erster OpenGL-Befehl in diesem Programm).
 	// Beim späteren Löschen gibt man die Farbe dann nicht mehr an, sondern liest sie aus dem GC.

@@ -25,6 +25,9 @@ private:
 	glm::mat4 projektion;
     glm::mat4 ansicht;
     glm::mat4 modell;
+    double rotationPositiv;
+    double rotationNegtiv;
+    double distanzKamera;
     char* pathsBMP[10] = { RESOURCES_DIR "/sonne.bmp",
     RESOURCES_DIR "/merkur.bmp",
     RESOURCES_DIR "/venus.bmp",
@@ -38,6 +41,8 @@ private:
     };
     void sendMVP(mat4 gameObjectModel);
     Universumskoerper renderHelper(Universumskoerper uk);
+    //void key_callback(int key, int scancode, int action, int mods);
+    Universumskoerper movePlanet(Universumskoerper uk,double speed);
 };
 
 #endif

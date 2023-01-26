@@ -31,13 +31,74 @@ Applikation::Applikation(unsigned int breite, unsigned int hoehe, const char* ti
 	}
 
 	this->hwnd = glfwCreateWindow(breite, hoehe, titel, NULL, NULL);
-
-    //this->pathsBMP[10]
+    distanzKamera = 40.0;
 }
 
 Applikation::~Applikation(){
 	glfwDestroyWindow(this->hwnd);
 }
+
+/**
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
+    switch (key)
+    {
+        case GLFW_KEY_ESCAPE:
+            glfwSetWindowShouldClose(this->hwnd, GL_TRUE);
+            break;
+
+        case GLFW_KEY_J:
+            distanzKamera++;
+            break;
+        case GLFW_KEY_I:
+            if (distanzKamera > 0) {
+                distanzKamera--;
+            }
+            break;
+
+        case GLFW_KEY_W:
+            break;
+        case GLFW_KEY_S:
+            break;
+
+        case GLFW_KEY_Q:
+            break;
+        case GLFW_KEY_E:
+            break;
+
+        case GLFW_KEY_A:
+            break;
+        case GLFW_KEY_D:
+            break;
+
+        case GLFW_KEY_C:
+            break;
+
+        case GLFW_KEY_0:
+            break;
+
+        case GLFW_KEY_KP_1:
+
+            break;
+        case GLFW_KEY_KP_2:
+            break;
+        case GLFW_KEY_KP_3:
+            break;
+        case GLFW_KEY_KP_4:
+            break;
+        case GLFW_KEY_KP_6:
+            break;
+        case GLFW_KEY_KP_7:
+            break;
+        case GLFW_KEY_KP_8:
+            break;
+        case GLFW_KEY_KP_9:
+            break;
+
+        default:
+            break;
+    }
+}
+**/
 
 void Applikation::sendMVP()
 {
@@ -113,23 +174,23 @@ void Applikation::run() {
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.0f, 0.0f, 0.9f);
 
-	//glfwSetKeyCallback(hwnd, key_callback);
+	glfwSetKeyCallback(hwnd, key_callback);
 	programmID = LoadShaders(SHADER_DIR "/StandardShading.vertexshader", SHADER_DIR "/StandardShading.fragmentshader");
 	glUseProgram(programmID);
 
     std::vector<Universumskoerper> ukVector;
     ukVector.reserve(10);
 
-    Universumskoerper ukSonne = Universumskoerper("Sonne",RESOURCES_DIR "/sonne.bmp", -5.0f, 0.0f, 0.0f, 2.0f, 2.0f, 2.0f);
-    Universumskoerper ukMerkur = Universumskoerper("Merkur", RESOURCES_DIR "/merkur.bmp", 1.0f, 0.0f, 0.0f, 0.2f, 0.2f, 0.2f);
-    Universumskoerper ukVenus = Universumskoerper("Venus", RESOURCES_DIR "/venus.bmp", 2.0f, 0.0f, 0.0f, 0.2f, 0.2f, 0.3f);
-    Universumskoerper ukErde = Universumskoerper("Erde", RESOURCES_DIR "/erde.bmp", 3.0f, 0.0f, 0.0f, 0.3f, 0.3f, 0.3f);
-    Universumskoerper ukMars = Universumskoerper("Mars", RESOURCES_DIR "/mars.bmp", 4.0f, 0.0f, 0.0f, 0.3f, 0.3f, 0.3f);
-    Universumskoerper ukJupiter = Universumskoerper("Jupiter", RESOURCES_DIR "/jupiter.bmp", 5.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.5f);
-    Universumskoerper ukSaturn = Universumskoerper("Saturn", RESOURCES_DIR "/saturn.bmp", 6.0f, 0.0f, 0.0f, 0.7f, 0.7f, 0.7f);
-    Universumskoerper ukUranus = Universumskoerper("Uranus", RESOURCES_DIR "/uranus.bmp", 7.0f, 0.0f, 0.0f, 0.45f, 0.45f, 0.45f);
-    Universumskoerper ukNeptun = Universumskoerper("Neptun", RESOURCES_DIR "/neptun.bmp", 8.0f, 0.0f, 0.0f, 0.45f, 0.45f, 0.45f);
-    Universumskoerper ukPluto = Universumskoerper("Pluto", RESOURCES_DIR "/pluto.bmp", 9.0f, 0.0f, 0.0f, 0.1f, 0.1f, 0.1f);
+    Universumskoerper ukSonne = Universumskoerper("Sonne", 0, RESOURCES_DIR "/sonne.bmp", 0.0, 0.0, 2.0f, 2.0f, 2.0f);
+    Universumskoerper ukMerkur = Universumskoerper("Merkur", 88, RESOURCES_DIR "/merkur.bmp", 0.58, 2.0, 0.2f, 0.2f, 0.2f);
+    Universumskoerper ukVenus = Universumskoerper("Venus", 225, RESOURCES_DIR "/venus.bmp", 1.08, 4.0, 0.2f, 0.2f, 0.3f);
+    Universumskoerper ukErde = Universumskoerper("Erde", 365, RESOURCES_DIR "/erde.bmp", 1.5, 6.0, 0.3f, 0.3f, 0.3f);
+    Universumskoerper ukMars = Universumskoerper("Mars", 687, RESOURCES_DIR "/mars.bmp", 2.28, 8.0, 0.3f, 0.3f, 0.3f);
+    Universumskoerper ukJupiter = Universumskoerper("Jupiter", 12*365, RESOURCES_DIR "/jupiter.bmp", 7.78, 10.0, 0.5f, 0.5f, 0.5f);
+    Universumskoerper ukSaturn = Universumskoerper("Saturn", 29*365, RESOURCES_DIR "/saturn.bmp", 14.33, 12.0, 0.7f, 0.7f, 0.7f);
+    Universumskoerper ukUranus = Universumskoerper("Uranus", 84*365, RESOURCES_DIR "/uranus.bmp", 28.72, 14.0, 0.45f, 0.45f, 0.45f);
+    Universumskoerper ukNeptun = Universumskoerper("Neptun", 165*365, RESOURCES_DIR "/neptun.bmp", 44.98, 16.0, 0.45f, 0.45f, 0.45f);
+    Universumskoerper ukPluto = Universumskoerper("Pluto", 248*365, RESOURCES_DIR "/pluto.bmp", 59.06, 18.0, 0.1f, 0.1f, 0.1f);
 
     ukVector.push_back(renderHelper(ukSonne));
     ukVector.push_back(renderHelper(ukMerkur));
@@ -141,10 +202,12 @@ void Applikation::run() {
     ukVector.push_back(renderHelper(ukUranus));
     ukVector.push_back(renderHelper(ukNeptun));
     ukVector.push_back(renderHelper(ukPluto));
+    ukSonne.setLeuchtkraft(programmID);
     float n = 0.1f;
     float f = 100.0f;
     this->projektion = glm::perspective(45.0f, 16.0f / 9.0f, n, f);
-    this->ansicht = glm::lookAt(glm::vec3(0.0, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    //this->ansicht = glm::lookAt(glm::vec3(0.0, 0.0f, -distanzKamera), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 
     //----------------------------//
@@ -161,7 +224,16 @@ void Applikation::run() {
         glUniform1i(glGetUniformLocation(programmID, "myTextureSampler"), 0);
         for (int i = 0; i < ukVector.size(); i++) {
             Universumskoerper uk = ukVector[i];
+
+            if(uk.name!="Sonne"){
+                uk = movePlanet(uk,250);
+            }
+            else{
+                printf("Sonne bei x: %f y: %f\n",uk.posX,uk.posZ);
+
+            }
             glm::mat4 tmp = uk.gameObjectModel;
+
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, uk.texture);
             glUniform1i(glGetUniformLocation(programmID, "myTextureSampler"), 0);
@@ -170,16 +242,42 @@ void Applikation::run() {
             glDrawArrays(GL_TRIANGLES, 0, uk.vertices.size());
             uk.gameObjectModel = tmp;
         }
-        //glUniform1i(glGetUniformLocation(programmID, "myTextureSampler"), 0);
-        glm::vec4 lightPos = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -10.0f)) * glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+
+        //ukSonne.setLeuchtkraft(programmID);
+        glm::vec3 lightPos = ukSonne.getObjekt() * glm::vec4(0.0f, 0.3f, 0.0f, 10.0f);//glm::vec3(4,4,?4);
         glUniform3f(glGetUniformLocation(programmID, "LightPosition_worldspace"), lightPos.x, lightPos.y,
                     lightPos.z);
+
         glfwSwapBuffers(hwnd);
 
     }
 
 }
 
+Universumskoerper Applikation::movePlanet(Universumskoerper uk,double speed){
+    double a = uk.maxDistSun;
+    double r = uk.minDistSun;
+    double phiSkip = 360/uk.yearLength;
+    phiSkip = phiSkip/speed;
+    uk.phi += phiSkip;
+    double x,y;
+    x=r*cos(uk.phi);
+    y=r*sin(uk.phi);
+    glm::mat4 tmp = glm::translate(uk.gameObjectModel, glm::vec3(uk.posX-x, 0, uk.posZ-y));
+    uk.posX=x;
+    uk.posZ=y;
+    if(uk.name=="Erde"){
+         printf("Erde bei x: %f y: %f\n",uk.posX,uk.posZ);
+    }
+
+    uk.gameObjectModel=tmp;
+    return uk;
+
+
+
+
+
+}
 //----------------------------//
 //       render helper        //
 //----------------------------//
