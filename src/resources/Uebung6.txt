@@ -1,0 +1,29 @@
+
+
+glUniformMatrix4fv(glGetUniformLocation(programID, "M"), 1, GL_FALSE, &Model[0][0]);
+glUniformMatrix4fv(glGetUniformLocation(programID, "V"), 1, GL_FALSE, &View[0][0]);
+glUniformMatrix4fv(glGetUniformLocation(programID, "P"), 1, GL_FALSE, &Projection[0][0]);
+
+---------------------------------------------------------------------------------------------
+
+
+GLuint normalbuffer; // Hier alles analog für Normalen in location == 2
+glGenBuffers(1, &normalbuffer);
+glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+glEnableVertexAttribArray(2); // siehe layout im vertex shader 
+glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+---------------------------------------------------------------------------------------------
+
+### Achtung die folgende Zeile ersetzt eine andere ######
+programID = LoadShaders("StandardShading.vertexshader", "StandardShading.fragmentshader");
+
+---------------------------------------------------------------------------------------------
+
+glm::vec3 lightPos = glm::vec3(4,4,-4);
+glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
+
+-----------------------------------------------------------------------------------------------
+
+glDeleteBuffers(1, &normalbuffer);

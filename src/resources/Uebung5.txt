@@ -1,0 +1,57 @@
+// 1 //
+
+
+// Ab Uebung5 werden objloader.hpp und cpp benoetigt
+#include "objloader.hpp"
+
+---------------------------------------------------------------
+
+// 2 //
+
+std::vector<glm::vec3> vertices;
+std::vector<glm::vec2> uvs;
+std::vector<glm::vec3> normals; 
+bool res = loadOBJ("teapot.obj", vertices, uvs, normals);
+
+// Jedes Objekt eigenem VAO zuordnen, damit mehrere Objekte moeglich sind
+// VAOs sind Container fuer mehrere Buffer, die zusammen gesetzt werden sollen.
+GLuint VertexArrayIDTeapot;
+glGenVertexArrays(1, &VertexArrayIDTeapot);
+glBindVertexArray(VertexArrayIDTeapot);
+	
+// Ein ArrayBuffer speichert Daten zu Eckpunkten (hier xyz bzw. Position)
+GLuint vertexbuffer;
+glGenBuffers(1, &vertexbuffer); // Kennung erhalten
+glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer); // Daten zur Kennung definieren
+// Buffer zugreifbar für die Shader machen
+glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+
+// Erst nach glEnableVertexAttribArray kann DrawArrays auf die Daten zugreifen...
+glEnableVertexAttribArray(0); // siehe layout im vertex shader: location = 0 
+glVertexAttribPointer(0,  // location = 0 
+		      3,  // Datenformat vec3: 3 floats fuer xyz 
+		      GL_FLOAT, 
+		      GL_FALSE, // Fixedpoint data normalisieren ?
+		      0, // Eckpunkte direkt hintereinander gespeichert
+		      (void*) 0); // abweichender Datenanfang ? 
+
+-------------------------------------------------------------------------
+
+// 3 //
+
+Model = glm::scale(Model, glm::vec3(1.0 / 1000.0, 1.0 / 1000.0, 1.0 / 1000.0));
+
+-------------------------------------------------------------------------
+
+// 4 //
+
+glBindVertexArray(VertexArrayIDTeapot);
+glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
+-------------------------------------------------------------------------
+
+// 5 //
+
+// Cleanup VBO and shader
+glDeleteBuffers(1, &vertexbuffer);
+
