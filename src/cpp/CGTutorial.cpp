@@ -147,7 +147,7 @@ void error_callback(int error, const char* description)
 		break;
 	}
 }
-
+*/
 
 // Diese drei Matrizen speichern wir global (Singleton-Muster), damit sie jederzeit modifiziert und
 // an die Grafikkarte geschickt werden können. Ihre Bedeutung habe ich in der Vorlesung Geometrische

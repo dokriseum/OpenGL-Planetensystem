@@ -19,6 +19,61 @@ using namespace glm;
 #include <filesystem>
 #include <fstream>
 
+float camY = 0.0f;
+float radius = 10.0f;
+float turn = 0;
+
+glm::mat4 ansicht = glm::lookAt(glm::vec3(0.0, 0.0f, radius), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+void rotate(int turn){
+    float camX = sin(turn) * radius;
+    float camZ = cos(turn) * radius;
+    glm::vec3 cameraPos = glm::vec3(camX, camY, camZ);
+    glm::vec3 objectPos = glm::vec3(0.0, 0.0, 0.0);
+    glm::vec3 up = glm::vec3(0.0, 1.0, 0.0);
+    ansicht = glm::lookAt(cameraPos, objectPos, up);
+}
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    const float cameraSpeed = 1.0f;
+    switch (key)
+    {
+        case GLFW_KEY_ESCAPE:
+            glfwSetWindowShouldClose(window, GL_TRUE);
+            break;
+        case GLFW_KEY_A:
+            if(turn - 1 == 0.0f){
+                turn = 360.0f;
+            }
+            turn--;
+            rotate(turn);
+            break;
+        case GLFW_KEY_D:
+            if(turn + 1 == 360.0f){
+                turn = 0.0f;
+            }
+            turn++;
+            rotate(turn);
+            break;
+        case GLFW_KEY_W:
+            camY++;
+            rotate(turn);
+            break;
+        case GLFW_KEY_S:
+            camY--;
+            rotate(turn);
+            break;
+        case GLFW_KEY_Q:
+            radius--;
+            rotate(turn);
+            break;
+        case GLFW_KEY_E:
+            radius++;
+            rotate(turn);
+            break;
+        default:
+            break;
+    }
+}
+
 Applikation::Applikation(unsigned int breite, unsigned int hoehe, const char* titel) {
 	this->breite = breite;
 	this->hoehe = hoehe;
@@ -241,6 +296,7 @@ void Applikation::run() {
             glBindVertexArray(uk.renderVertexArray);
             glDrawArrays(GL_TRIANGLES, 0, uk.vertices.size());
             uk.gameObjectModel = tmp;
+            ukVector[i]=uk;
         }
 
         //ukSonne.setLeuchtkraft(programmID);

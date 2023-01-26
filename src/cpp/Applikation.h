@@ -23,7 +23,6 @@ private:
 	const char* titel;
 	unsigned int programmID;
 	glm::mat4 projektion;
-    glm::mat4 ansicht;
     glm::mat4 modell;
     double rotationPositiv;
     double rotationNegtiv;

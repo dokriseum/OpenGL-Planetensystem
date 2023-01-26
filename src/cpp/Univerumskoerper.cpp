@@ -14,19 +14,32 @@ using namespace glm;
 #include <math.h>
 #include "Universumskoerper.h"
 
-Universumskoerper::Universumskoerper(char* name,const char* pathTexture, float posX, float posY, float posZ){
+Universumskoerper::Universumskoerper(std::string name,double yearLength, const char* pathTexture,double minDistSun, double maxDistSun){
     this->name=name;
+    this->yearLength = yearLength;
+    this->minDistSun = minDistSun;
+    this->maxDistSun = maxDistSun;
+    this->phi=0;
     bool res = loadOBJ(RESOURCES_DIR "/sphere.obj", vertices, uvs, normals);
     gameObjectModel = glm::mat4(1.0f);
-    gameObjectModel = glm::translate(gameObjectModel, glm::vec3(posX, posY, posZ));
+
+    this->posX= 0;
+    this->posY = 0;
+    this->posZ = 0;
     gameObjectModel = glm::scale(gameObjectModel, glm::vec3(1, 1, 1));
     setTexture(pathTexture,programID);
 }
-Universumskoerper::Universumskoerper(char* name, const char* pathTexture, float posX, float posY, float posZ, float scaleX, float scaleY, float scaleZ){
+Universumskoerper::Universumskoerper(std::string name, double yearLength, const char* pathTexture, double minDistSun, double maxDistSun, float scaleX, float scaleY, float scaleZ){
     this->name=name;
+    this->yearLength = yearLength;
+    this->minDistSun = minDistSun;
+    this->maxDistSun = maxDistSun;
+    this->phi=0;
     bool res = loadOBJ(RESOURCES_DIR "/sphere.obj", vertices, uvs, normals);
     gameObjectModel = glm::mat4(1.0f);
-    gameObjectModel = glm::translate(gameObjectModel, glm::vec3(posX, posY, posZ));
+    this->posX= 0;
+    this->posY = 0;
+    this->posZ = 0;
     gameObjectModel = glm::scale(gameObjectModel, glm::vec3(scaleX, scaleY, scaleZ));
     setTexture(pathTexture,programID);
 }
