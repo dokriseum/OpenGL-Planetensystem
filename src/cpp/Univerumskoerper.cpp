@@ -37,6 +37,7 @@ Universumskoerper::Universumskoerper(std::string name, double yearLength, const 
     this->phi=0;
     bool res = loadOBJ(RESOURCES_DIR "/sphere.obj", vertices, uvs, normals);
     gameObjectModel = glm::mat4(1.0f);
+    gameObjectModel = glm::translate(gameObjectModel, glm::vec3(minDistSun,0,0));
     this->posX= 0;
     this->posY = 0;
     this->posZ = 0;

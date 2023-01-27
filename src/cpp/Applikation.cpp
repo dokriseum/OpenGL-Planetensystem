@@ -24,6 +24,7 @@ float radius = 10.0f;
 float turn = 0;
 
 glm::mat4 ansicht = glm::lookAt(glm::vec3(0.0, 0.0f, radius), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
 void rotate(int turn){
     float camX = sin(turn) * radius;
     float camZ = cos(turn) * radius;
@@ -32,6 +33,7 @@ void rotate(int turn){
     glm::vec3 up = glm::vec3(0.0, 1.0, 0.0);
     ansicht = glm::lookAt(cameraPos, objectPos, up);
 }
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     const float cameraSpeed = 1.0f;
     switch (key)
@@ -237,15 +239,15 @@ void Applikation::run() {
     ukVector.reserve(10);
 
     Universumskoerper ukSonne = Universumskoerper("Sonne", 0, RESOURCES_DIR "/sonne.bmp", 0.0, 0.0, 2.0f, 2.0f, 2.0f);
-    Universumskoerper ukMerkur = Universumskoerper("Merkur", 88, RESOURCES_DIR "/merkur.bmp", 0.58, 2.0, 0.2f, 0.2f, 0.2f);
-    Universumskoerper ukVenus = Universumskoerper("Venus", 225, RESOURCES_DIR "/venus.bmp", 1.08, 4.0, 0.2f, 0.2f, 0.3f);
-    Universumskoerper ukErde = Universumskoerper("Erde", 365, RESOURCES_DIR "/erde.bmp", 1.5, 6.0, 0.3f, 0.3f, 0.3f);
-    Universumskoerper ukMars = Universumskoerper("Mars", 687, RESOURCES_DIR "/mars.bmp", 2.28, 8.0, 0.3f, 0.3f, 0.3f);
-    Universumskoerper ukJupiter = Universumskoerper("Jupiter", 12*365, RESOURCES_DIR "/jupiter.bmp", 7.78, 10.0, 0.5f, 0.5f, 0.5f);
-    Universumskoerper ukSaturn = Universumskoerper("Saturn", 29*365, RESOURCES_DIR "/saturn.bmp", 14.33, 12.0, 0.7f, 0.7f, 0.7f);
-    Universumskoerper ukUranus = Universumskoerper("Uranus", 84*365, RESOURCES_DIR "/uranus.bmp", 28.72, 14.0, 0.45f, 0.45f, 0.45f);
-    Universumskoerper ukNeptun = Universumskoerper("Neptun", 165*365, RESOURCES_DIR "/neptun.bmp", 44.98, 16.0, 0.45f, 0.45f, 0.45f);
-    Universumskoerper ukPluto = Universumskoerper("Pluto", 248*365, RESOURCES_DIR "/pluto.bmp", 59.06, 18.0, 0.1f, 0.1f, 0.1f);
+    Universumskoerper ukMerkur = Universumskoerper("Merkur", 88, RESOURCES_DIR "/merkur.bmp", 20.8, 22.0, 0.2f, 0.2f, 0.2f);
+    Universumskoerper ukVenus = Universumskoerper("Venus", 225, RESOURCES_DIR "/venus.bmp", 20.8, 22.0, 0.2f, 0.2f, 0.3f);
+    Universumskoerper ukErde = Universumskoerper("Erde", 365, RESOURCES_DIR "/erde.bmp", 20.8, 22.0, 0.3f, 0.3f, 0.3f);
+    Universumskoerper ukMars = Universumskoerper("Mars", 687, RESOURCES_DIR "/mars.bmp", 20.8, 22.0, 0.3f, 0.3f, 0.3f);
+    Universumskoerper ukJupiter = Universumskoerper("Jupiter", 365, RESOURCES_DIR "/jupiter.bmp", 11.0, 12.0, 0.9f, 0.9f, 0.9f);
+    Universumskoerper ukSaturn = Universumskoerper("Saturn", 365, RESOURCES_DIR "/saturn.bmp", 15.8, 17.0, 0.7f, 0.7f, 0.7f);
+    Universumskoerper ukUranus = Universumskoerper("Uranus", 365, RESOURCES_DIR "/uranus.bmp", 19.8, 20.0, 0.45f, 0.45f, 0.45f);
+    Universumskoerper ukNeptun = Universumskoerper("Neptun", 365, RESOURCES_DIR "/neptun.bmp", 19.8, 22.0, 0.45f, 0.45f, 0.45f);
+    Universumskoerper ukPluto = Universumskoerper("Pluto", 365, RESOURCES_DIR "/pluto.bmp", 19.8, 24.0, 0.1f, 0.1f, 0.1f);
 
     ukVector.push_back(renderHelper(ukSonne));
     ukVector.push_back(renderHelper(ukMerkur));
@@ -281,7 +283,7 @@ void Applikation::run() {
             Universumskoerper uk = ukVector[i];
 
             if(uk.name!="Sonne"){
-                uk = movePlanet(uk,250);
+                uk = movePlanet(uk,100);
             }
             else{
                 printf("Sonne bei x: %f y: %f\n",uk.posX,uk.posZ);
@@ -298,11 +300,12 @@ void Applikation::run() {
             uk.gameObjectModel = tmp;
             ukVector[i]=uk;
         }
-
+        GLfloat cyan[] = {0.f, .8f, .8f, 1.f};
         //ukSonne.setLeuchtkraft(programmID);
-        glm::vec3 lightPos = ukSonne.getObjekt() * glm::vec4(0.0f, 0.3f, 0.0f, 10.0f);//glm::vec3(4,4,?4);
-        glUniform3f(glGetUniformLocation(programmID, "LightPosition_worldspace"), lightPos.x, lightPos.y,
-                    lightPos.z);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, cyan);
+        glm::vec3 lightPos = ukSonne.getObjekt() * glm::vec4(0.0f, 0.0f, 0.0f, 100.0f);//glm::vec3(4,4,?4);
+        glUniform3f(glGetUniformLocation(programmID, "LightPosition_worldspace"), lightPos.x, lightPos.y+5, lightPos.z);
+
 
         glfwSwapBuffers(hwnd);
 
@@ -322,9 +325,6 @@ Universumskoerper Applikation::movePlanet(Universumskoerper uk,double speed){
     glm::mat4 tmp = glm::translate(uk.gameObjectModel, glm::vec3(uk.posX-x, 0, uk.posZ-y));
     uk.posX=x;
     uk.posZ=y;
-    if(uk.name=="Erde"){
-         printf("Erde bei x: %f y: %f\n",uk.posX,uk.posZ);
-    }
 
     uk.gameObjectModel=tmp;
     return uk;
